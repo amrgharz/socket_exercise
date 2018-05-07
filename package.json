@@ -10,5 +10,9 @@
     "start": "concurrently --kill-others-on-fail --names \"server client\" \"npm run server\" \"npm run client\""
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^3.5.1",
+    "npm-run-all": "^4.1.3"
+  }
 }
