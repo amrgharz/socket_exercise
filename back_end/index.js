@@ -35,11 +35,9 @@ io.on('connection' , (socket) =>{
         globalNumber++
         io.emit('number:change',globalNumber)
     });
-
     socket.on('decrement' , ()=>{
         globalNumber--
         io.emit('number:change' , globalNumber)
     });
-
     socket.emit('number:change',globalNumber)
 });
