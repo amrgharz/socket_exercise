@@ -10,10 +10,17 @@ class App extends Component {
   componentDidMount(){
     const socket = io('http://localhost:8888');
 
-    this.setState({socket})
+    this.setState({socket:socket})
 
     socket.on('number:change' , (globalNumber) => {
       this.setState({globalNumber})
+    })
+    socket.on('user:new',(username) =>{
+      console.log('a user called ' + username + ' is connected')
+    })
+
+    socket.on ('user:me' , (username)=>{
+      this.setState({username})
     })
   }
 
@@ -28,7 +35,7 @@ class App extends Component {
         </header>
         <h1>{this.state.globalNumber}</h1>
 
-
+        <h1>{this.state.username}</h1>
         <button onClick={this.onIncrement}>increament</button>
         <button onClick={this.onDecrement}>decrement</button>
       </div>
