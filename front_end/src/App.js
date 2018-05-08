@@ -4,9 +4,18 @@ import './App.css';
 import io from  'socket.io-client'
 
 class App extends Component {
+constructor(){
+  super();
+  this.state = { socket:null , globalNumber:0 , value:''}
+}
 
-  state = {socket:null , globalNumber:0}
-
+handleChange = (evt) =>{
+  evt.preventDefault()
+  const input_value = evt.target.input.value
+  this.setState({input_value})
+  console.log(this.state.input_value)
+}
+  
   componentDidMount(){
     const socket = io('http://localhost:8888');
 
@@ -26,8 +35,11 @@ class App extends Component {
 
   onIncrement = () => this.state.socket.emit('increment')
   onDecrement = () => this.state.socket.emit('decrement')
+  
   render() {
+    
     return (
+
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
@@ -36,6 +48,16 @@ class App extends Component {
         <h1>{this.state.globalNumber}</h1>
 
         <h1>{this.state.username}</h1>
+
+        <div>{this.state.onChange}</div>
+        
+        <form onSubmit={this.handleChange}>
+            <input type='text' placeholder='type' name='input'  />
+            <input type='submit'/>
+
+        </form>
+
+
         <button onClick={this.onIncrement}>increament</button>
         <button onClick={this.onDecrement}>decrement</button>
       </div>
