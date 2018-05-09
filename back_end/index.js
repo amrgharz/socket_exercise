@@ -5,7 +5,7 @@ const server = http.createServer()
 const catNames = require ('cat-names');
 
 const handleRequest = (req , res) =>{
-    res.end('ok!')
+    res.end('ok!s;lddj')
 }
 
 server.on('request' , handleRequest)
@@ -15,6 +15,8 @@ server.listen(8888 , ()=> console.log('server is ready'))
 const io = require ('socket.io')(server);
 
 let globalNumber = 0
+
+const messages = []
 
 io.on('connection' , (socket) =>{
     const username = catNames.random()
@@ -30,6 +32,12 @@ io.on('connection' , (socket) =>{
     socket.on('disconnected',() =>{
         console.log('user disconnected')
     });
+
+    socket.on('message' , (username , text) =>{
+        const message = {username , text}
+        messages.push(message)
+        io.emit('message' , username , text )
+    })
 
     socket.on('increment' , ()=>{
         globalNumber++

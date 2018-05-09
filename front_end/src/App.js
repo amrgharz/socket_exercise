@@ -6,16 +6,13 @@ import io from  'socket.io-client'
 class App extends Component {
 constructor(){
   super();
-  this.state = { socket:null , globalNumber:0 , value:''}
+  this.state = { socket:null,
+  globalNumber:0 , 
+  texts:[
+    {username:'hell' , text:' welcome to hell '}
+  ]  
 }
-
-handleChange = (evt) =>{
-  evt.preventDefault()
-  const input_value = evt.target.input.value
-  this.setState({input_value})
-  console.log(this.state.input_value)
-}
-  
+}  
   componentDidMount(){
     const socket = io('http://localhost:8888');
 
@@ -24,6 +21,12 @@ handleChange = (evt) =>{
     socket.on('number:change' , (globalNumber) => {
       this.setState({globalNumber})
     })
+
+    socket.on('message' , (username , text)=>{
+      const message = {username , text}
+      const texts = [ ...this.state.texts , message]
+      this.setState({texts})
+    })
     socket.on('user:new',(username) =>{
       console.log('a user called ' + username + ' is connected')
     })
@@ -31,11 +34,23 @@ handleChange = (evt) =>{
     socket.on ('user:me' , (username)=>{
       this.setState({username})
     })
+
+    
   }
 
   onIncrement = () => this.state.socket.emit('increment')
   onDecrement = () => this.state.socket.emit('decrement')
   
+  handleChange = (evt) =>{
+    evt.preventDefault()
+    const text = evt.target.text.value
+    if(!text) {return;}
+    evt.target.text.value = ' ';
+    const username = evt.target.username.value
+    this.state.socket.emit('message' , username , text)
+    
+    console.log(this.state.text)
+  }
   render() {
     
     return (
@@ -52,14 +67,30 @@ handleChange = (evt) =>{
         <div>{this.state.onChange}</div>
         
         <form onSubmit={this.handleChange}>
-            <input type='text' placeholder='type' name='input'  />
-            <input type='submit'/>
+            <input name='username' defaultValue='hellMaker'/>
+            <input name='text' defaultValue='hello from hell'/>
+            <button>submit</button>
 
         </form>
 
 
         <button onClick={this.onIncrement}>increament</button>
         <button onClick={this.onDecrement}>decrement</button>
+
+        <div style={{width:'100%' , height:'500'}}>
+          {this.state.texts.map(
+            (message)=>
+            <div>
+              {message.username}
+              {message.text}
+            </div>
+          )
+     
+
+                   
+        }
+        </div>
+
       </div>
     );
   }
